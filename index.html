@@ -4,11 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Prototype interactive animations for a creative meal planning web app">
-    <!-- <link rel="icon" type="image/png" href="/images/favicon.png" /> -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="styles.css">
     <title>Meal App Prototype</title>
 </head>
 <body>
+
+    <header>
+        <h1>Interactive Ingredients Prototype</h1>
+    </header>
+
+    <section id="ingredient-selector">
+        <label for="ingredient-select">Ingredient</label>
+        <select id="ingredient-select">
+            <option>Tofu</option>
+            <option>Sauce</option>
+            <option>Pepper</option>
+            <option>Herbs</option>
+        </select>
+    </section>
+
+    <section class="meal-zone">
+        <!-- view box slightly bigger to make room for shadows -->
+        <svg
+        id="plate"
+        class="plate"
+        viewBox="0 0 680 680"
+        role="img">
+        <ellipse class="plate-rim" cx="340" cy="340" rx="330" ry="330" />
+        <ellipse class="plate-inner" cx="340" cy="340" rx="240" ry="240" />
+      </svg>
+    </section>
     
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="app.js"></script>

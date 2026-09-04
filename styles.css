@@ -1,0 +1,42 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgba(255, 247, 213, 0.975);
+    font-family: monospace;
+}
+
+header {
+    background-color: burlywood;
+}
+
+h1 {
+    padding: 10px;
+    color: white;
+}
+
+#ingredient-selector {
+    margin: 10px;
+}
+
+.meal-zone {
+    margin: 50px;
+    padding: 20px;
+    max-width: 800px;
+    border: solid 4px peachpuff;
+    border-style: dashed;
+    border-radius: 30px;;
+}
+
+.plate-rim {
+    fill: #fff;
+    filter: drop-shadow(5px 5px 5px rgba(145, 83, 83, 0.4));
+}
+
+.plate-inner {
+    fill: rgb(249, 248, 241);
+    stroke: #e7e4dc;
+    stroke-width: 4;
+}

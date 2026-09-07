@@ -65,7 +65,6 @@ plate.addEventListener("pointerdown", (e) => {
 
 function addIngredient(i, x, y) {
     const definition = ingredientRefs[i];
-    console.log(ingredientRefs[i].size)
 
     //error handling for unknown type then exits out of function
     if (!definition) {
@@ -90,7 +89,13 @@ function addIngredient(i, x, y) {
     mealState.ingredients.push(instance);
     console.log(mealState)
 
-    createPepper(instance);
+    if(i == "tofu") {
+        createTofu(instance);
+    }
+
+    if(i == "pepper") {
+        createPepper(instance);
+    }
 }
 
 

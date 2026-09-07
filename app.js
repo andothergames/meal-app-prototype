@@ -24,7 +24,7 @@ const ingredientRefs = {
     },
     pepper: {
         behaviour: "stamp",
-        size: 40
+        size: 20
     },
     herbs: {
         behaviour: "sprinkle"
@@ -90,15 +90,13 @@ function addIngredient(i, x, y) {
     mealState.ingredients.push(instance);
     console.log(mealState)
 
-    createTofu(instance);
+    createPepper(instance);
 }
 
 
 //draws tofu SVG using ingredientRefs size
 
 function createTofu(i) {
-    console.log(i)
-
     side = i.size * i.scale
     center = -side / 2
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -119,6 +117,31 @@ function createTofu(i) {
     body.setAttribute("rx", "4")
     body.setAttribute("ry", "4")
     body.setAttribute("fill", "blanchedalmond")
+    body.setAttribute("fill-opacity", "80%")
+
+    group.appendChild(body);
+    plate.appendChild(group)
+    return group;
+
+}
+
+function createPepper(i) {
+    //original SVG drawing is 256 wide, scaling it to match the ingredientRefs
+    const scale = (i.size * i.scale) / 256;
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    group.setAttribute("class", "pepper");
+    group.setAttribute("transform",
+        `translate(${i.x} ${i.y})
+        rotate(${i.rotation})
+        scale(${scale})`
+    );
+
+    const body = document.createElementNS(
+        "http://www.w3.org/2000/svg", "path"
+    )
+    body.setAttribute("d", "M 64 0 C 64 35.346 92.654 64 128 64 L 128 128 C 57.308 128 0 70.692 0 0 Z M 256 0 C 256 70.692 198.692 128 128 128 L 128 64 C 163.346 64 192 35.346 192 0 Z")
+    body.setAttribute("fill", "red")
     body.setAttribute("fill-opacity", "80%")
 
     group.appendChild(body);

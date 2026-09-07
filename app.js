@@ -16,7 +16,7 @@ let nextID = 0;
 const ingredientRefs = {
     tofu: {
         behaviour: "stamp",
-        size: 40
+        size: 50
     },
     sauce: {
         behaviour: "splodge",
@@ -65,6 +65,7 @@ plate.addEventListener("pointerdown", (e) => {
 
 function addIngredient(i, x, y) {
     const definition = ingredientRefs[i];
+    console.log(ingredientRefs[i].size)
 
     //error handling for unknown type then exits out of function
     if (!definition) {
@@ -79,8 +80,9 @@ function addIngredient(i, x, y) {
         i,
         x,
         y,
-        rotation: random(-25, 25),
-        scale: (0.85, 1.1)
+        size: ingredientRefs[i].size,
+        rotation: random(-100, 100),
+        scale: random(0.8, 1.4)
     };
 
     nextID++
@@ -88,13 +90,40 @@ function addIngredient(i, x, y) {
     mealState.ingredients.push(instance);
     console.log(mealState)
 
-    // TO DO: draw the SVG item
+    createTofu(instance);
 }
 
 
-// TO DO: multiple functions to create SVGs of ingredients
+//draws tofu SVG using ingredientRefs size
 
-function createTofu() {
+function createTofu(i) {
+    console.log(i)
+
+    side = i.size * i.scale
+    center = -side / 2
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    group.setAttribute("class", "tofu");
+    group.setAttribute("transform",
+        `translate(${i.x} ${i.y}) rotate(${i.rotation})`
+    );
+
+    const body = document.createElementNS(
+        "http://www.w3.org/2000/svg", "rect"
+    )
+
+    body.setAttribute("width", side)
+    body.setAttribute("height", side)
+    body.setAttribute("x", center)
+    body.setAttribute("y", center)
+    body.setAttribute("rx", "4")
+    body.setAttribute("ry", "4")
+    body.setAttribute("fill", "blanchedalmond")
+    body.setAttribute("fill-opacity", "80%")
+
+    group.appendChild(body);
+    plate.appendChild(group)
+    return group;
 
 }
 

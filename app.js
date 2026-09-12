@@ -13,22 +13,27 @@ let nextID = 0;
 
 
 // object stores ingredient interaction refs and sizes
+// also storing function calls within object
 const ingredientRefs = {
     tofu: {
-        behaviour: "stamp",
+        create: createTofu,
+        animate: stamp,
         size: 50
     },
-    sauce: {
-        behaviour: "splodge",
-        size: 800
-    },
+    // sauce: {
+    //     create: createSauce,
+    //     animate: splodge,
+    //     size: 800
+    // },
     pepper: {
-        behaviour: "stamp",
-        size: 20
+        create: createPepper,
+        animate: spin,
+        size: 50
     },
-    herbs: {
-        behaviour: "sprinkle"
-    }
+    // herbs: {
+    //     create: createHerbs,
+    //     animate: sprinkle
+    // }
 
 };
 
@@ -56,9 +61,6 @@ plate.addEventListener("pointerdown", (e) => {
     }
     addIngredient(selectedIngredient, x, y)
 });
-
-
-
 
 
 //FUNCTIONS
@@ -89,26 +91,24 @@ function addIngredient(i, x, y) {
     mealState.ingredients.push(instance);
     console.log(mealState)
 
-    if(i == "tofu") {
-        createTofu(instance);
-    }
+    // using functions from actions object instead of if statements to avoid repeptition as the app grows
 
-    if(i == "pepper") {
-        createPepper(instance);
-    }
+    const action = ingredientRefs[i];
+    const element = action.create(instance)
+    action.animate(element)
 }
 
 
 //draws tofu SVG using ingredientRefs size
 
 function createTofu(i) {
-    side = i.size * i.scale
-    center = -side / 2
+    const side = i.size * i.scale
+    const center = -side / 2
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
     group.setAttribute("class", "tofu");
     group.setAttribute("transform",
-        `translate(${i.x} ${i.y}) rotate(${i.rotation})`
+        `translate(${i.x} ${i.y})`
     );
 
     const body = document.createElementNS(
@@ -156,6 +156,47 @@ function createPepper(i) {
 }
 
 function createHerbs() {
+
+}
+
+// ANIMATION FUNCTIONS
+
+function stamp(element) {
+
+    const startingRotation = random(-80, 80);
+    const landingRotation = random(-35, 35);
+
+    //creating a timeline chain of scaling up and down whilst rotating
+    gsap.set(element, {
+        scale: 0.55,
+        rotation: startingRotation,
+        transformOrigin: "center center"
+    });
+    gsap.timeline()
+        .to(element, {
+            scale: 1.1,
+            rotation: landingRotation,
+            duration: 0.28,
+            ease: "power2.out"
+        })
+        .to(element, {
+            scale: 1,
+            duration: 0.28,
+            ease: "back.out(2)"
+        })
+
+}
+
+function spin(element) {
+    gsap.timeline()
+        .to(element, {
+            duration: 0.28,
+            scaleX: 0,
+            transformOrigin: "50% 50%",
+            repeat: 1,
+            yoyo: true,
+            // ease: "power2.out"
+        })
 
 }
 

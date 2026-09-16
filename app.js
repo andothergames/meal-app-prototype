@@ -8,7 +8,7 @@ const mealState = {
 }
 
 // this will change on click, initially set to the first entry in drop down
-let selectedIngredient = 'tofu';
+let selectedIngredient = 'herbs';
 let nextID = 0;
 
 
@@ -30,10 +30,12 @@ const ingredientRefs = {
         animate: spin,
         size: 50
     },
-    // herbs: {
-    //     create: createHerbs,
-    //     animate: sprinkle
-    // }
+    herbs: {
+        create: createHerbs,
+        animate: placeholder,
+        size: 60,
+        count: 9
+    }
 
 };
 
@@ -82,6 +84,7 @@ function addIngredient(i, x, y) {
         x,
         y,
         size: ingredientRefs[i].size,
+        count: ingredientRefs[i].count,
         rotation: random(-100, 100),
         scale: random(0.8, 1.4)
     };
@@ -89,7 +92,6 @@ function addIngredient(i, x, y) {
     nextID++
 
     mealState.ingredients.push(instance);
-    console.log(mealState)
 
     // using functions from actions object instead of if statements to avoid repeptition as the app grows
 
@@ -125,7 +127,7 @@ function createTofu(i) {
     body.setAttribute("fill-opacity", "80%")
 
     group.appendChild(body);
-    plate.appendChild(group)
+    plate.appendChild(group);
     return group;
 
 }
@@ -150,14 +152,48 @@ function createPepper(i) {
     body.setAttribute("fill-opacity", "80%")
 
     group.appendChild(body);
-    plate.appendChild(group)
+    plate.appendChild(group);
     return group;
 
 }
 
-function createHerbs() {
+function createHerbs(i) {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute("class", "herbs");
+    group.setAttribute("transform",
+        `translate(${i.x} ${i.y})
+        rotate(0)`
+    );
 
+
+    for (let j = 0; j < i.count; j++) {
+        const angle = random(0, Math.PI * 2);
+        const distance = random(30, i.size);
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+        const green = Math.round(random(180, 255))
+        const blue = Math.round(random(40, 80))
+        
+        const body = document.createElementNS(
+            "http://www.w3.org/2000/svg", "rect"
+        )
+        body.setAttribute("class", "herb")
+        body.setAttribute("width", 2)
+        body.setAttribute("height", 12)
+        body.setAttribute("rx", 1)    
+        body.setAttribute("x", x)
+        body.setAttribute("y", y)
+        body.setAttribute("fill", `rgb(20, ${green}, ${blue}, 0.8)`)
+        body.setAttribute("transform",
+            `translate(${x} ${y})
+            rotate(${random(0, 300)})`)
+        group.appendChild(body)
+    };
+    plate.appendChild(group);
+    return group;
 }
+
+
 
 // ANIMATION FUNCTIONS
 
@@ -198,6 +234,10 @@ function spin(element) {
             // ease: "power2.out"
         })
 
+}
+
+function placeholder(element) {
+    return;
 }
 
 

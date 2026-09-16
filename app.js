@@ -167,8 +167,11 @@ function createHerbs(i) {
 
 
     for (let j = 0; j < i.count; j++) {
+        // generate a random angle from enter (0) to travel in
         const angle = random(0, Math.PI * 2);
+        // generate distance between 30 and size from ingredientRef
         const distance = random(30, i.size);
+        //calculate x and y coords to travel in
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
         const green = Math.round(random(180, 255))
@@ -183,10 +186,9 @@ function createHerbs(i) {
         body.setAttribute("rx", 1)    
         body.setAttribute("x", x)
         body.setAttribute("y", y)
-        body.setAttribute("fill", `rgb(20, ${green}, ${blue}, 0.8)`)
+        body.setAttribute("fill", `rgba(20, ${green}, ${blue}, 0.8)`)
         body.setAttribute("transform",
-            `translate(${x} ${y})
-            rotate(${random(0, 300)})`)
+            `rotate(${random(0, 360)} ${x} ${y})`)
         group.appendChild(body)
     };
     plate.appendChild(group);

@@ -2,6 +2,9 @@
 const plate = document.getElementById('plate');
 const ingredientSelect = document.getElementById('ingredient-select');
 
+
+// VARIABLES
+
 // storage for all placed ingredients on plate
 const mealState = {
     ingredients: []
@@ -10,7 +13,6 @@ const mealState = {
 // this will change on click, initially set to the first entry in drop down
 let selectedIngredient = 'herbs';
 let nextID = 0;
-
 
 // object stores ingredient interaction refs and sizes
 // also storing function calls within object
@@ -39,15 +41,12 @@ const ingredientRefs = {
 
 };
 
-
 const PLATE = {
     centerX: 420,
     centerY: 420,
     radiusX: 340,
     radiusY: 340,
 }
-
-
 
 //EVENT LISTENERS
 
@@ -70,12 +69,6 @@ plate.addEventListener("pointerdown", (e) => {
 function addIngredient(i, x, y) {
     const definition = ingredientRefs[i];
 
-    //error handling for unknown type then exits out of function
-    if (!definition) {
-        console.log(`Unknown ingredient ${i}`)
-        return;
-    }
-
     //current length of mealState used to number the next ID
     //create new ingredient instance to add to plateState
     const instance = {
@@ -89,22 +82,22 @@ function addIngredient(i, x, y) {
         scale: random(0.8, 1.4)
     };
 
+    // increment ID for next ingredient
     nextID++
-
+    //add ingredient to the array
     mealState.ingredients.push(instance);
-
-    // using functions from actions object instead of if statements to avoid repeptition as the app grows
-
+    // using functions from actions object instead of if statements
     const action = ingredientRefs[i];
     const element = action.create(instance)
     action.animate(element)
 }
 
 
-//draws tofu SVG using ingredientRefs size
+// CREATE SVG INGREDIENTS
 
 function createTofu(i) {
     const side = i.size * i.scale
+    // dividing the size by two to ensure cube appears in center of click
     const center = -side / 2
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
@@ -165,7 +158,7 @@ function createHerbs(i) {
         rotate(0)`
     );
 
-
+    // looping to create a herb for eachcount from ingredientRefs
     for (let j = 0; j < i.count; j++) {
         // generate a random angle from enter (0) to travel in
         const angle = random(0, Math.PI * 2);
@@ -174,16 +167,18 @@ function createHerbs(i) {
         //calculate x and y coords to travel in
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
+        //randomly generated green and blue values
         const green = Math.round(random(180, 255))
         const blue = Math.round(random(40, 80))
-        
+
         const body = document.createElementNS(
             "http://www.w3.org/2000/svg", "rect"
         )
         body.setAttribute("class", "herb")
         body.setAttribute("width", 2)
         body.setAttribute("height", 12)
-        body.setAttribute("rx", 1)    
+        //slightly round the rectangles with rx
+        body.setAttribute("rx", 1)
         body.setAttribute("x", x)
         body.setAttribute("y", y)
         body.setAttribute("fill", `rgba(20, ${green}, ${blue}, 0.8)`)
@@ -194,7 +189,6 @@ function createHerbs(i) {
     plate.appendChild(group);
     return group;
 }
-
 
 
 // ANIMATION FUNCTIONS
@@ -222,7 +216,6 @@ function stamp(element) {
             duration: 0.28,
             ease: "back.out(2)"
         })
-
 }
 
 function spin(element) {
@@ -235,13 +228,14 @@ function spin(element) {
             yoyo: true,
             // ease: "power2.out"
         })
-
 }
 
 function placeholder(element) {
     return;
 }
 
+
+// UTIL FUNCTIONS
 
 //returns whole number within range given to random used to rotate and scale ingredients
 function random(min, max) {

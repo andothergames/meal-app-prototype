@@ -11,7 +11,7 @@ const mealState = {
 }
 
 // this will change on click, initially set to the first entry in drop down
-let selectedIngredient = 'herbs';
+let selectedIngredient = 'tofu';
 let nextID = 0;
 
 // object stores ingredient interaction refs and sizes
@@ -37,6 +37,11 @@ const ingredientRefs = {
         animate: placeholder,
         size: 60,
         count: 9
+    },
+    noodle: {
+        create: createNoodle,
+        animate: placeholder,
+        size: 50
     }
 
 };
@@ -78,7 +83,7 @@ function addIngredient(i, x, y) {
         y,
         size: ingredientRefs[i].size,
         count: ingredientRefs[i].count,
-        rotation: random(-100, 100),
+        rotation: random(-180, 180),
         scale: random(0.8, 1.4)
     };
 
@@ -188,6 +193,38 @@ function createHerbs(i) {
     };
     plate.appendChild(group);
     return group;
+}
+
+function createNoodle(i) {
+    // rescaling
+    const scale = (i.size * i.scale) / 220;
+
+    //centering the noodle to appear in center
+    const x = (126 + 1196) / 2
+    const y = (126 + 1196) / 2
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    group.setAttribute("class", "noodle");
+    group.setAttribute("transform",
+        `translate(${i.x} ${i.y})
+        rotate(${i.rotation})
+        scale(${scale})
+        translate(${-x} ${-y})`
+    );
+
+    const body = document.createElementNS(
+        "http://www.w3.org/2000/svg", "path"
+    )
+    // path exported from my own Affinity Design Illustration
+    body.setAttribute("d", "M 201,516C201,516 188.767,185.614 502.5,210C502.5,210 1050.29,254.409 814,592C762.073,666.19 126.376,1066.05 348,156C348,156 366.357,54.057 476,80C476,80 1196.5,154.333 579,754C527.719,803.8 167.499,951.079 281,462C281,462 361.575,177.697 579,344C579,344 766.493,540.34 785,675 Z")
+    body.setAttribute("fill", "none")
+    body.setAttribute("stroke", "yellow")
+    body.setAttribute("stroke-width", 20)
+
+    group.appendChild(body);
+    plate.appendChild(group);
+    return group;
+
 }
 
 

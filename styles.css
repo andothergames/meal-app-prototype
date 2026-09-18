@@ -40,3 +40,11 @@ h1 {
     stroke: #e7e4dc;
     stroke-width: 4;
 }
+
+footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    
+}

@@ -11,7 +11,7 @@ const mealState = {
 }
 
 // this will change on click, initially set to the first entry in drop down
-let selectedIngredient = 'tofu';
+let selectedIngredient = 'herbs';
 let nextID = 0;
 
 // object stores ingredient interaction refs and sizes
@@ -34,8 +34,8 @@ const ingredientRefs = {
     },
     herbs: {
         create: createHerbs,
-        animate: placeholder,
-        size: 60,
+        animate: sprinkle,
+        size: 80,
         count: 9
     },
     noodle: {
@@ -271,6 +271,29 @@ function placeholder(element) {
     return;
 }
 
+function sprinkle(element) {
+
+    const dashes = [element.children];
+
+    gsap.set(dashes, {
+        y: -50,
+        scale: 0.2,
+        opacity: 0
+    });
+
+    gsap.to(dashes, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 0.32,
+        stagger: {
+            each: 0.025,
+            from: "random"
+        },
+        ease: "back.out(2)",
+        rotation: "+=" + random(-180, 180),
+    })
+}
 
 // UTIL FUNCTIONS
 

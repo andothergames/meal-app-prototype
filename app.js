@@ -1,4 +1,6 @@
-gsap.registerPlugin(MorphSVGPlugin) 
+gsap.registerPlugin(MorphSVGPlugin);
+gsap.registerPlugin(DrawSVGPlugin);
+
 
 //DOM listeners
 const plate = document.getElementById('plate');
@@ -18,7 +20,7 @@ const mealState = {
 const pepperSVG = "M 64 0 C 64 35.346 92.654 64 128 64 L 128 128 C 57.308 128 0 70.692 0 0 Z M 256 0 C 256 70.692 198.692 128 128 128 L 128 64 C 163.346 64 192 35.346 192 0 Z"
 
 // path exported from my own Affinity Design Illustration
-const noodleSVG = "M 201,516C201,516 188.767,185.614 502.5,210C502.5,210 1050.29,254.409 814,592C762.073,666.19 126.376,1066.05 348,156C348,156 366.357,54.057 476,80C476,80 1196.5,154.333 579,754C527.719,803.8 167.499,951.079 281,462C281,462 361.575,177.697 579,344C579,344 766.493,540.34 785,675 Z"
+const noodleSVG = "M 201,516C201,516 188.767,185.614 502.5,210C502.5,210 1050.29,254.409 814,592C762.073,666.19 126.376,1066.05 348,156C348,156 366.357,54.057 476,80C476,80 1196.5,154.333 579,754C527.719,803.8 167.499,951.079 281,462C281,462 361.575,177.697 579,344C579,344 766.493,540.34 785,675"
 
 // path exported from my own Affinity Design Illustration
 const sauceSVG = "M 42.835,102.451C42.835,79.897 34.916,81.767 32.423,66.372C31.124,58.347 33.93,44.16 39.237,39.709C58.347,23.68 61.204,22.944 90.626,16.94C116.43,11.674 127.564,18.961 139.258,23.631C144.355,25.667 169.662,47.428 173.249,57.495C182.669,83.925 176.441,88.344 179.991,98.438C185.135,113.064 193.854,121.758 180.65,143.739C175.655,152.054 156.323,162.36 133.155,158.925C91.725,152.783 84.934,149.54 80.843,148.316C37.91,135.47 42.835,102.451 42.835,102.451 Z"
@@ -28,7 +30,7 @@ const sauceSplatSVG = "M 46.835,105.451C46.835,82.897 34.916,81.767 32.423,66.37
 
 
 // this will change on click, initially set to the first entry in drop down
-let selectedIngredient = 'tofu';
+let selectedIngredient = 'noodle';
 let nextID = 0;
 
 // object stores ingredient interaction refs and sizes
@@ -57,7 +59,7 @@ const ingredientRefs = {
     },
     noodle: {
         create: createNoodle,
-        animate: placeholder,
+        animate: drawPath,
         size: 50
     }
 
@@ -218,7 +220,7 @@ function createNoodle(i) {
 
     //centering the noodle to appear in center
     const x = (126 + 1196) / 2
-    const y = (126 + 1196) / 2
+    const y = (54 + 1066) / 2
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
     group.setAttribute("class", "noodle");
@@ -235,12 +237,13 @@ function createNoodle(i) {
     
     body.setAttribute("d", noodleSVG)
     body.setAttribute("fill", "none")
-    body.setAttribute("stroke", "yellow")
+    body.setAttribute("stroke", "burlywood")
     body.setAttribute("stroke-width", 20)
+    body.setAttribute("stroke-linecap", "round")
 
     group.appendChild(body);
     plate.appendChild(group);
-    return group;
+    return body;
 
 }
 
@@ -360,6 +363,18 @@ function sprinkle(element) {
         },
         ease: "back.out(2)",
         rotation: "+=" + random(-180, 180),
+    })
+}
+
+function drawPath(element) {
+    gsap.set(element, {
+        drawSVG: "0%"
+    });
+
+    gsap.to(element, {
+        drawSVG: "100%",
+        duration: 1.2,
+        ease: "steps(3)"
     })
 }
 

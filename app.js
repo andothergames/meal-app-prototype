@@ -1,3 +1,5 @@
+gsap.registerPlugin(MorphSVGPlugin) 
+
 //DOM listeners
 const plate = document.getElementById('plate');
 const ingredientSelect = document.getElementById('ingredient-select');
@@ -10,8 +12,23 @@ const mealState = {
     ingredients: []
 }
 
+// SVG PATHS
+
+// path stitched together from Shapes available at https://www.shapes.gallery/
+const pepperSVG = "M 64 0 C 64 35.346 92.654 64 128 64 L 128 128 C 57.308 128 0 70.692 0 0 Z M 256 0 C 256 70.692 198.692 128 128 128 L 128 64 C 163.346 64 192 35.346 192 0 Z"
+
+// path exported from my own Affinity Design Illustration
+const noodleSVG = "M 201,516C201,516 188.767,185.614 502.5,210C502.5,210 1050.29,254.409 814,592C762.073,666.19 126.376,1066.05 348,156C348,156 366.357,54.057 476,80C476,80 1196.5,154.333 579,754C527.719,803.8 167.499,951.079 281,462C281,462 361.575,177.697 579,344C579,344 766.493,540.34 785,675 Z"
+
+// path exported from my own Affinity Design Illustration
+const sauceSVG = "M 42.835,102.451C42.835,79.897 34.916,81.767 32.423,66.372C31.124,58.347 33.93,44.16 39.237,39.709C58.347,23.68 61.204,22.944 90.626,16.94C116.43,11.674 127.564,18.961 139.258,23.631C144.355,25.667 169.662,47.428 173.249,57.495C182.669,83.925 176.441,88.344 179.991,98.438C185.135,113.064 193.854,121.758 180.65,143.739C175.655,152.054 156.323,162.36 133.155,158.925C91.725,152.783 84.934,149.54 80.843,148.316C37.91,135.47 42.835,102.451 42.835,102.451 Z"
+
+// path exported from my own Affinity Design Illustration
+const sauceSplatSVG = "M 46.835,105.451C46.835,82.897 34.916,81.767 32.423,66.372C31.124,58.347 41.93,32.16 47.237,27.709C66.347,11.68 59.204,38.944 95.626,15.94C117.892,1.877 120.564,23.961 132.258,28.631C137.355,30.667 166.662,44.428 170.249,54.495C179.669,80.925 161.441,89.344 164.991,99.438C170.135,114.064 180.854,117.758 167.65,139.739C162.655,148.054 154.323,143.36 131.155,139.925C89.725,133.783 70.897,150.062 56.843,144.316C44.46,139.253 46.835,105.451 46.835,105.451 Z"
+
+
 // this will change on click, initially set to the first entry in drop down
-let selectedIngredient = 'herbs';
+let selectedIngredient = 'tofu';
 let nextID = 0;
 
 // object stores ingredient interaction refs and sizes
@@ -22,11 +39,11 @@ const ingredientRefs = {
         animate: stamp,
         size: 50
     },
-    // sauce: {
-    //     create: createSauce,
-    //     animate: splodge,
-    //     size: 800
-    // },
+    sauce: {
+        create: createSauce,
+        animate: splodge,
+        size: 180
+    },
     pepper: {
         create: createPepper,
         animate: spin,
@@ -145,7 +162,7 @@ function createPepper(i) {
     const body = document.createElementNS(
         "http://www.w3.org/2000/svg", "path"
     )
-    body.setAttribute("d", "M 64 0 C 64 35.346 92.654 64 128 64 L 128 128 C 57.308 128 0 70.692 0 0 Z M 256 0 C 256 70.692 198.692 128 128 128 L 128 64 C 163.346 64 192 35.346 192 0 Z")
+    body.setAttribute("d", pepperSVG)
     body.setAttribute("fill", "red")
     body.setAttribute("fill-opacity", "80%")
 
@@ -215,8 +232,8 @@ function createNoodle(i) {
     const body = document.createElementNS(
         "http://www.w3.org/2000/svg", "path"
     )
-    // path exported from my own Affinity Design Illustration
-    body.setAttribute("d", "M 201,516C201,516 188.767,185.614 502.5,210C502.5,210 1050.29,254.409 814,592C762.073,666.19 126.376,1066.05 348,156C348,156 366.357,54.057 476,80C476,80 1196.5,154.333 579,754C527.719,803.8 167.499,951.079 281,462C281,462 361.575,177.697 579,344C579,344 766.493,540.34 785,675 Z")
+    
+    body.setAttribute("d", noodleSVG)
     body.setAttribute("fill", "none")
     body.setAttribute("stroke", "yellow")
     body.setAttribute("stroke-width", 20)
@@ -224,6 +241,31 @@ function createNoodle(i) {
     group.appendChild(body);
     plate.appendChild(group);
     return group;
+
+}
+
+
+function createSauce(i) {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    group.setAttribute("class", "sauce");
+    group.setAttribute("transform",
+        `translate(${i.x} ${i.y})
+        rotate(${random(-180, 180)})
+
+        translate(-113 -88)`
+    );
+
+    const body = document.createElementNS(
+        "http://www.w3.org/2000/svg", "path"
+    )
+
+    body.setAttribute("d", sauceSVG)
+    body.setAttribute("fill", "rgba(250, 95, 95, 0.9)")
+
+    group.appendChild(body);
+    plate.appendChild(group);
+    return body;
 
 }
 
@@ -269,6 +311,32 @@ function spin(element) {
 
 function placeholder(element) {
     return;
+}
+
+function splodge(element) {
+
+    gsap.set(element, {
+        transformOrigin: "center center"
+    });
+
+    gsap.timeline()
+        .to(element, {
+            morphSVG: sauceSplatSVG,
+            scale: 1.2,
+            duration: 0.5,
+            // ease: "back.out(1.5)"
+        })
+        .to(element, {
+            scale: 1,
+            duration: 0.5,
+            // ease: "power2.out"
+        })
+        .to(element, {
+            morphSVG: sauceSVG,
+            duration: 0.5,
+            // ease: "power2.out"
+        })
+
 }
 
 function sprinkle(element) {

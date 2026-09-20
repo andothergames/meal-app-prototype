@@ -1,3 +1,4 @@
+// PLUG INS
 gsap.registerPlugin(MorphSVGPlugin);
 gsap.registerPlugin(DrawSVGPlugin);
 
@@ -6,12 +7,14 @@ gsap.registerPlugin(DrawSVGPlugin);
 const plate = document.getElementById('plate');
 const ingredientSelect = document.getElementById('ingredient-select');
 
+
 //AUDIO
 const slurp = document.getElementById('slurp');
 const chop = document.getElementById('chop');
 const drop = document.getElementById('drop');
 const splat = document.getElementById('splat');
 const shake = document.getElementById('shake');
+
 
 // VARIABLES
 
@@ -40,8 +43,7 @@ let selectedIngredient = 'sauce';
 // used to number ingredients
 let nextID = 0;
 
-// object stores ingredient interaction refs and sizes
-// also storing function calls within object
+// object stores ingredient values and function calls
 const ingredientRefs = {
     tofu: {
         create: createTofu,
@@ -70,13 +72,14 @@ const ingredientRefs = {
     },
     noodle: {
         create: createNoodle,
-        animate: drawPath,
+        animate: draw,
         size: 50,
         sound: slurp
     }
 
 };
 
+//coords to set boundaries in
 const PLATE = {
     centerX: 420,
     centerY: 420,
@@ -138,28 +141,32 @@ function createTofu(i) {
     const center = -side / 2
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
+    //setting group attributes to translate
     group.setAttribute("class", "tofu");
     group.setAttribute("transform",
         `translate(${i.x} ${i.y})`
     );
 
+    // creating rect element
     const body = document.createElementNS(
         "http://www.w3.org/2000/svg", "rect"
     )
 
+    // setting body attributes to style the tofu rectangle
     body.setAttribute("width", side)
     body.setAttribute("height", side)
     body.setAttribute("x", center)
     body.setAttribute("y", center)
+    //rx/ry rounds the corners
     body.setAttribute("rx", "4")
     body.setAttribute("ry", "4")
     body.setAttribute("fill", "blanchedalmond")
     body.setAttribute("fill-opacity", "80%")
 
+    //appends the body to the group, the group to the plate
     group.appendChild(body);
     plate.appendChild(group);
     return group;
-
 }
 
 function createPepper(i) {
@@ -172,6 +179,7 @@ function createPepper(i) {
     const body = document.createElementNS(
         "http://www.w3.org/2000/svg", "path"
     )
+    // using "d" for path
     body.setAttribute("d", pepperSVG)
     body.setAttribute("fill", "red")
     body.setAttribute("fill-opacity", "80%")
@@ -219,11 +227,10 @@ function createHerbs(i) {
         body.setAttribute("class", "herb")
         body.setAttribute("width", 2)
         body.setAttribute("height", 12)
-        //slightly round the rectangles with rx
         body.setAttribute("rx", 1)
         body.setAttribute("x", x)
         body.setAttribute("y", y)
-        body.setAttribute("fill", `rgba(20, ${green}, ${blue}, 0.8)`)
+        body.setAttribute("fill", `rgb(20, ${green}, ${blue})`)
         body.setAttribute("transform",
             `rotate(${random(0, 360)} ${x} ${y})`)
         group.appendChild(body)
@@ -236,7 +243,7 @@ function createNoodle(i) {
     // rescaling
     const scale = (i.size * i.scale) / 220;
 
-    //centering the noodle to appear in center
+    //centering the noodle to appear in center with bodged maths
     const x = (126 + 1196) / 2
     const y = (54 + 1066) / 2
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -261,7 +268,6 @@ function createNoodle(i) {
 
     group.appendChild(body);
     plate.appendChild(group);
-    // slurpSound.play()
     return body;
 
 }
@@ -274,7 +280,6 @@ function createSauce(i) {
     group.setAttribute("transform",
         `translate(${i.x} ${i.y})
         rotate(${random(-180, 180)})
-
         translate(-113 -88)`
     );
 
@@ -288,14 +293,16 @@ function createSauce(i) {
     group.appendChild(body);
     plate.appendChild(group);
     return body;
-
 }
 
 
 // ANIMATION FUNCTIONS
 
+//STAMP
+
 function stamp(element) {
 
+    // setting rotations randomly for the timeline
     const startingRotation = random(-80, 80);
     const landingRotation = random(-35, 35);
 
@@ -310,6 +317,7 @@ function stamp(element) {
             scale: 1.1,
             rotation: landingRotation,
             duration: 0.28,
+            //using ease to smooth transitions
             ease: "power2.out"
         })
         .to(element, {
@@ -320,19 +328,26 @@ function stamp(element) {
 }
 
 
+//BOUNCE
+
 function bounce(element) {
 
     gsap.timeline()
         .to(element, {
+            //y positioning to raise and lower the element
             y: "-=20",
             duration: 0.2,
         })
         .to(element, {
             y: "+=20",
             duration: 0.5,
+            //using ease for bounce effect
             ease: "bounce.out"
         })
 }
+
+
+//SPLODGE
 
 function splodge(element) {
 
@@ -342,6 +357,7 @@ function splodge(element) {
 
     gsap.timeline()
         .to(element, {
+            //morphSVG plug in moves from one SVG to another
             morphSVG: sauceSplatSVG,
             scale: 1.2,
             duration: 0.5,
@@ -354,48 +370,63 @@ function splodge(element) {
             morphSVG: sauceSVG,
             duration: 0.5,
         })
-
 }
+
+
+//SPRINKLE
 
 function sprinkle(element) {
 
+    //take the elements children and pass it into an array
     const dashes = [element.children];
 
     gsap.set(dashes, {
+        //set y coordinates higher to appear as if falling
         y: -50,
+        //they start smaller in scale
         scale: 0.2,
+        //and invisible through opacity
         opacity: 0
     });
 
     gsap.to(dashes, {
+        //it works towards full opacity, size and the correct y position
         opacity: 1,
         scale: 1,
         y: 0,
         duration: 0.32,
+        //stagger to randomly pop up herbs at 0.025 increments
         stagger: {
             each: 0.025,
             from: "random"
         },
         ease: "back.out(2)",
+        //+= to rotate either way by 180 degrees
         rotation: "+=" + random(-180, 180),
     })
 }
 
-function drawPath(element) {
+//DRAW
+
+function draw(element) {
     gsap.set(element, {
+        //using drawSVG plug in from 0% to 100%
         drawSVG: "0%"
     });
 
     gsap.to(element, {
         drawSVG: "100%",
         duration: 1.2,
+        //using steps ease for a stuttery effect 
+        //appears in three steps
         ease: "steps(3)"
     })
 }
 
+
 // UTIL FUNCTIONS
 
-//returns whole number within range given to random used to rotate and scale ingredients
+//returns whole number within range
 function random(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
@@ -405,7 +436,7 @@ function changeSelectedIngredient() {
     selectedIngredient = ingredientSelect.value;
 }
 
-// function to decide if cursor is inside plate area using radius equation
+//determines if cursor is inside plate area using radius equation
 function isInsidePlate(x, y) {
     const dx = (x - PLATE.centerX) / PLATE.radiusX;
     const dy = (y - PLATE.centerY) / PLATE.radiusY;

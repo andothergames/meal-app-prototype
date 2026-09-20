@@ -36,7 +36,7 @@ const sauceSplatSVG = "M 46.835,105.451C46.835,82.897 34.916,81.767 32.423,66.37
 
 
 // changes on click, initially set to the first entry in drop down
-let selectedIngredient = 'tofu';
+let selectedIngredient = 'sauce';
 // used to number ingredients
 let nextID = 0;
 

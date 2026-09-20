@@ -8,7 +8,7 @@ To run the prototype, download the code and run index.html within the browser or
 
 Select different ingredients from the drop down list and click on the plate to create a meal collage.
 
-<img src="https://github.com/andothergames/meal-app-prototype/blob/main/meal.gif?raw=true" width="200">  
+<img src="https://github.com/andothergames/meal-app-prototype/blob/main/meal.gif?raw=true" width="400">  
 
 ---
 
